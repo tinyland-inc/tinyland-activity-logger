@@ -1,5 +1,5 @@
 {
-  "name": "@tinyland-inc/tinyland-activity-logger",
+  "name": "@tummycrypt/tinyland-activity-logger",
   "version": "0.1.0",
   "description": "File-based admin activity logger with query and rotation support",
   "type": "module",
@@ -47,5 +47,9 @@
   },
   "engines": {
     "node": ">=22.0.0"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   }
 }

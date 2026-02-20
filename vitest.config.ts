@@ -1,5 +1,5 @@
 /**
- * Vitest Configuration for @tinyland-inc/tinyland-activity-logger
+ * Vitest Configuration for @tummycrypt/tinyland-activity-logger
  *
  * Works in three modes:
  *   1. Standalone:  cd packages/tinyland-activity-logger && pnpm test

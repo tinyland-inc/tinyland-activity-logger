@@ -1,5 +1,5 @@
 /**
- * @tinyland-inc/tinyland-activity-logger
+ * @tummycrypt/tinyland-activity-logger
  *
  * File-based admin activity logger with query and rotation support.
  */
