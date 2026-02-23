@@ -1,6 +1,6 @@
-/**
- * Tests for the DI configuration module.
- */
+
+
+
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import {
@@ -14,7 +14,7 @@ describe('ActivityLoggerConfig', () => {
     resetActivityLoggerConfig();
   });
 
-  // -- Defaults ---------------------------------------------------------------
+  
 
   it('should have baseDir defaulting to process.cwd()', () => {
     const config = getActivityLoggerConfig();
@@ -35,7 +35,7 @@ describe('ActivityLoggerConfig', () => {
     const config = getActivityLoggerConfig();
     expect(typeof config.generateId).toBe('function');
     const id = config.generateId();
-    // UUID v4 regex
+    
     expect(id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
   });
 
@@ -46,13 +46,13 @@ describe('ActivityLoggerConfig', () => {
     expect(id1).not.toBe(id2);
   });
 
-  // -- configureActivityLogger ------------------------------------------------
+  
 
   it('should merge partial config: baseDir only', () => {
     configureActivityLogger({ baseDir: '/tmp/test' });
     const config = getActivityLoggerConfig();
     expect(config.baseDir).toBe('/tmp/test');
-    // Others remain default
+    
     expect(config.logSubPath).toBe('content/auth/logs/admin-activity.json');
     expect(config.maxLogs).toBe(10000);
   });
@@ -113,17 +113,17 @@ describe('ActivityLoggerConfig', () => {
     expect(after.logSubPath).toBe(before.logSubPath);
   });
 
-  // -- getActivityLoggerConfig ------------------------------------------------
+  
 
   it('should return a snapshot, not a live reference', () => {
     const a = getActivityLoggerConfig();
     configureActivityLogger({ maxLogs: 999 });
-    // a should still have the old value
+    
     expect(a.maxLogs).toBe(10000);
     expect(getActivityLoggerConfig().maxLogs).toBe(999);
   });
 
-  // -- resetActivityLoggerConfig ----------------------------------------------
+  
 
   it('should restore all defaults after reset', () => {
     configureActivityLogger({
@@ -137,7 +137,7 @@ describe('ActivityLoggerConfig', () => {
     expect(config.baseDir).toBe(process.cwd());
     expect(config.logSubPath).toBe('content/auth/logs/admin-activity.json');
     expect(config.maxLogs).toBe(10000);
-    // generateId should produce UUIDs again
+    
     expect(config.generateId()).toMatch(/^[0-9a-f-]{36}$/i);
   });
 

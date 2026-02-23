@@ -1,10 +1,10 @@
-/**
- * Comprehensive tests for AdminActivityLogger, the lazy singleton,
- * and the logAdminAction convenience helper.
- *
- * Every test uses a unique temp directory via configureActivityLogger()
- * so nothing is written to the real project tree.
- */
+
+
+
+
+
+
+
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'fs';
@@ -23,9 +23,9 @@ import {
 } from '../src/config.js';
 import type { ActivityLog, UserContext } from '../src/types.js';
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
+
+
+
 
 let tmpDir: string;
 
@@ -33,30 +33,30 @@ function freshTmpDir(): string {
   return mkdtempSync(join(tmpdir(), 'activity-logger-test-'));
 }
 
-/** Return the raw log array written to disk. */
+
 function readLogsFromDisk(): ActivityLog[] {
   const filePath = join(tmpDir, 'content/auth/logs/admin-activity.json');
   const raw = readFileSync(filePath, 'utf-8');
   return (JSON.parse(raw) as { logs: ActivityLog[] }).logs;
 }
 
-/** Seed the log file with the given data. */
+
 function seedLogFile(data: unknown): void {
   const dir = join(tmpDir, 'content/auth/logs');
   mkdirSync(dir, { recursive: true });
   writeFileSync(join(dir, 'admin-activity.json'), JSON.stringify(data));
 }
 
-/** Create a minimal Request with given headers. */
+
 function makeRequest(headers: Record<string, string>): Request {
   return new Request('http://localhost', { headers });
 }
 
 let idCounter: number;
 
-// ---------------------------------------------------------------------------
-// Setup / Teardown
-// ---------------------------------------------------------------------------
+
+
+
 
 beforeEach(() => {
   tmpDir = freshTmpDir();
@@ -75,13 +75,13 @@ afterEach(() => {
   try {
     rmSync(tmpDir, { recursive: true, force: true });
   } catch {
-    // best-effort cleanup
+    
   }
 });
 
-// ===========================================================================
-// Constructor & Initialization
-// ===========================================================================
+
+
+
 
 describe('AdminActivityLogger - constructor', () => {
   it('should create an empty logs array when no file exists', async () => {
@@ -131,11 +131,11 @@ describe('AdminActivityLogger - constructor', () => {
   });
 
   it('should create the log directory if it does not exist', () => {
-    // Just constructing should create the dir
+    
     new AdminActivityLogger();
     const dir = join(tmpDir, 'content/auth/logs');
-    // If we got here without throwing, the directory was created.
-    // Verify by writing a file there:
+    
+    
     writeFileSync(join(dir, 'probe.txt'), 'ok');
     expect(readFileSync(join(dir, 'probe.txt'), 'utf-8')).toBe('ok');
   });
@@ -192,9 +192,9 @@ describe('AdminActivityLogger - constructor', () => {
   });
 });
 
-// ===========================================================================
-// log()
-// ===========================================================================
+
+
+
 
 describe('AdminActivityLogger - log()', () => {
   it('should create an entry with auto-generated id', async () => {
@@ -254,7 +254,7 @@ describe('AdminActivityLogger - log()', () => {
     }
     const disk = readLogsFromDisk();
     expect(disk).toHaveLength(3);
-    // Oldest two (u0, u1) should have been trimmed
+    
     expect(disk[0].userId).toBe('u2');
     expect(disk[1].userId).toBe('u3');
     expect(disk[2].userId).toBe('u4');
@@ -309,9 +309,9 @@ describe('AdminActivityLogger - log()', () => {
   it('should handle file write errors gracefully', async () => {
     const logger = new AdminActivityLogger();
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    // Reconfigure to a non-writable path after construction so saveLogs fails
+    
     configureActivityLogger({ baseDir: '/dev/null/impossible' });
-    // Should not throw even though saveLogs will fail
+    
     await logger.log({
       userId: 'u1',
       username: 'alice',
@@ -324,9 +324,9 @@ describe('AdminActivityLogger - log()', () => {
   });
 });
 
-// ===========================================================================
-// logUserAction()
-// ===========================================================================
+
+
+
 
 describe('AdminActivityLogger - logUserAction()', () => {
   it('should set success to true', async () => {
@@ -409,9 +409,9 @@ describe('AdminActivityLogger - logUserAction()', () => {
   });
 });
 
-// ===========================================================================
-// logFailedAction()
-// ===========================================================================
+
+
+
 
 describe('AdminActivityLogger - logFailedAction()', () => {
   it('should set success to false', async () => {
@@ -463,9 +463,9 @@ describe('AdminActivityLogger - logFailedAction()', () => {
   });
 });
 
-// ===========================================================================
-// getRecentLogs()
-// ===========================================================================
+
+
+
 
 describe('AdminActivityLogger - getRecentLogs()', () => {
   it('should return logs in reverse chronological order', async () => {
@@ -486,7 +486,7 @@ describe('AdminActivityLogger - getRecentLogs()', () => {
     }
     const logs = await logger.getRecentLogs(3);
     expect(logs).toHaveLength(3);
-    // Should be the last 3, reversed
+    
     expect(logs[0].userId).toBe('u9');
     expect(logs[1].userId).toBe('u8');
     expect(logs[2].userId).toBe('u7');
@@ -496,7 +496,7 @@ describe('AdminActivityLogger - getRecentLogs()', () => {
     const logger = new AdminActivityLogger();
     await logger.log({ userId: 'u1', username: 'a', action: 'a', resource: 'r', success: true });
 
-    // Externally write another entry
+    
     const filePath = join(tmpDir, 'content/auth/logs/admin-activity.json');
     const current = JSON.parse(readFileSync(filePath, 'utf-8')) as { logs: ActivityLog[] };
     current.logs.push({
@@ -530,9 +530,9 @@ describe('AdminActivityLogger - getRecentLogs()', () => {
   });
 });
 
-// ===========================================================================
-// getLogsByUser()
-// ===========================================================================
+
+
+
 
 describe('AdminActivityLogger - getLogsByUser()', () => {
   it('should filter by userId', async () => {
@@ -571,9 +571,9 @@ describe('AdminActivityLogger - getLogsByUser()', () => {
   });
 });
 
-// ===========================================================================
-// getLogsByAction()
-// ===========================================================================
+
+
+
 
 describe('AdminActivityLogger - getLogsByAction()', () => {
   it('should filter by action string', async () => {
@@ -612,9 +612,9 @@ describe('AdminActivityLogger - getLogsByAction()', () => {
   });
 });
 
-// ===========================================================================
-// getLogsByResource()
-// ===========================================================================
+
+
+
 
 describe('AdminActivityLogger - getLogsByResource()', () => {
   it('should filter by resource', async () => {
@@ -662,9 +662,9 @@ describe('AdminActivityLogger - getLogsByResource()', () => {
   });
 });
 
-// ===========================================================================
-// getLogsByDateRange()
-// ===========================================================================
+
+
+
 
 describe('AdminActivityLogger - getLogsByDateRange()', () => {
   it('should return logs within the specified date range', async () => {
@@ -740,9 +740,9 @@ describe('AdminActivityLogger - getLogsByDateRange()', () => {
   });
 });
 
-// ===========================================================================
-// getFailedActions()
-// ===========================================================================
+
+
+
 
 describe('AdminActivityLogger - getFailedActions()', () => {
   it('should return only logs with success=false', async () => {
@@ -782,9 +782,9 @@ describe('AdminActivityLogger - getFailedActions()', () => {
   });
 });
 
-// ===========================================================================
-// clearOldLogs()
-// ===========================================================================
+
+
+
 
 describe('AdminActivityLogger - clearOldLogs()', () => {
   it('should remove logs older than daysToKeep', async () => {
@@ -865,9 +865,9 @@ describe('AdminActivityLogger - clearOldLogs()', () => {
   });
 });
 
-// ===========================================================================
-// Lazy Singleton (getAdminActivityLogger / resetAdminActivityLoggerInstance)
-// ===========================================================================
+
+
+
 
 describe('getAdminActivityLogger (lazy singleton)', () => {
   it('should return the same instance on repeated calls', () => {
@@ -884,7 +884,7 @@ describe('getAdminActivityLogger (lazy singleton)', () => {
   });
 
   it('should use config set before first access', async () => {
-    // Config was already set in beforeEach with tmpDir
+    
     const logger = getAdminActivityLogger();
     await logger.log({ userId: 'u1', username: 'a', action: 'test', resource: 'r', success: true });
     const disk = readLogsFromDisk();
@@ -897,9 +897,9 @@ describe('getAdminActivityLogger (lazy singleton)', () => {
   });
 });
 
-// ===========================================================================
-// logAdminAction() helper
-// ===========================================================================
+
+
+
 
 describe('logAdminAction()', () => {
   it('should use UserContext to extract user info', async () => {
@@ -986,9 +986,9 @@ describe('logAdminAction()', () => {
   });
 });
 
-// ===========================================================================
-// Integration / Multi-operation
-// ===========================================================================
+
+
+
 
 describe('Integration scenarios', () => {
   it('should maintain state across multiple sequential operations', async () => {
@@ -1046,7 +1046,7 @@ describe('Integration scenarios', () => {
     const logs = await logger.getRecentLogs();
     expect(logs).toHaveLength(5);
 
-    // Verify custom path was used
+    
     const customFile = join(tmpDir, 'custom/path/audit.json');
     const raw = readFileSync(customFile, 'utf-8');
     const parsed = JSON.parse(raw) as { logs: ActivityLog[] };
@@ -1068,7 +1068,7 @@ describe('Integration scenarios', () => {
     await logAdminAction(ctx, 'test', 'res');
     const logger = getAdminActivityLogger();
     const logs = await logger.getRecentLogs();
-    // Empty string is falsy, so should fall through to id
+    
     expect(logs[0].username).toBe('uid-empty');
   });
 });
