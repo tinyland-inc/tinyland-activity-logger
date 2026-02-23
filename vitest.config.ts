@@ -1,13 +1,13 @@
-/**
- * Vitest Configuration for @tummycrypt/tinyland-activity-logger
- *
- * Works in three modes:
- *   1. Standalone:  cd packages/tinyland-activity-logger && pnpm test
- *   2. Workspace:   vitest run --project=tinyland-activity-logger (from root)
- *   3. Bazel:       bazel test //packages/tinyland-activity-logger:test
- *
- * Coverage thresholds: Utilities category (60%)
- */
+
+
+
+
+
+
+
+
+
+
 
 import { defineConfig } from 'vitest/config';
 import { fileURLToPath } from 'node:url';
