@@ -1,9 +1,9 @@
-/**
- * File-based admin activity logger with query and rotation support.
- *
- * All file paths are derived from the DI config (see config.ts),
- * so consumers can redirect storage without modifying this module.
- */
+
+
+
+
+
+
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
@@ -11,9 +11,9 @@ import { join, dirname } from 'path';
 import type { ActivityLog, UserContext } from './types.js';
 import { getActivityLoggerConfig } from './config.js';
 
-/**
- * Resolve the absolute path to the log file based on current config.
- */
+
+
+
 function resolveLogFilePath(): string {
   const config = getActivityLoggerConfig();
   return join(config.baseDir, config.logSubPath);
@@ -199,16 +199,16 @@ export class AdminActivityLogger {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Lazy singleton -- NOT constructed at module load so tests can configure
-// baseDir before the first access.
-// ---------------------------------------------------------------------------
+
+
+
+
 
 let _instance: AdminActivityLogger | null = null;
 
-/**
- * Return (and lazily create) the shared singleton logger.
- */
+
+
+
 export function getAdminActivityLogger(): AdminActivityLogger {
   if (!_instance) {
     _instance = new AdminActivityLogger();
@@ -216,22 +216,22 @@ export function getAdminActivityLogger(): AdminActivityLogger {
   return _instance;
 }
 
-/**
- * Reset the singleton so the next call to getAdminActivityLogger()
- * creates a fresh instance (useful in tests after reconfiguring).
- */
+
+
+
+
 export function resetAdminActivityLoggerInstance(): void {
   _instance = null;
 }
 
-// ---------------------------------------------------------------------------
-// Convenience helper
-// ---------------------------------------------------------------------------
 
-/**
- * Log an admin action using a framework-agnostic UserContext.
- * If the context has no user, the call is a no-op.
- */
+
+
+
+
+
+
+
 export async function logAdminAction(
   locals: UserContext,
   action: string,
